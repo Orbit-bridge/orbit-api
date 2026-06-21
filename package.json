@@ -1,0 +1,36 @@
+{
+  "name": "@orbit-bridge/api",
+  "version": "0.1.0",
+  "description": "Public API, MCP server, and orchestration layer for Orbit",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["cross-chain", "bridge", "stellar", "api", "mcp", "ai-agent"],
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^4.5.0",
+    "@hono/node-server": "^1.13.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@orbit-bridge/core": "*",
+    "@orbit-bridge/executor": "*",
+    "zod": "^3.23.0",
+    "zod-validator": "^0.4.0",
+    "@hono/zod-validator": "^0.4.0",
+    "uuid": "^10.0.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tsx": "^4.19.0",
+    "vitest": "^2.0.0",
+    "@types/node": "^22.0.0",
+    "@types/uuid": "^10.0.0"
+  }
+}
