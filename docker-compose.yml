@@ -1,0 +1,57 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      STELLAR_NETWORK: ${STELLAR_NETWORK:-mainnet}
+      STELLAR_HORIZON_URL: ${STELLAR_HORIZON_URL:-https://horizon.stellar.org}
+      EVM_RPC_ETHEREUM: ${EVM_RPC_ETHEREUM}
+      EVM_RPC_BASE: ${EVM_RPC_BASE}
+      EVM_RPC_ARBITRUM: ${EVM_RPC_ARBITRUM}
+      EVM_RPC_OPTIMISM: ${EVM_RPC_OPTIMISM}
+      EVM_RPC_POLYGON: ${EVM_RPC_POLYGON}
+      EVM_RPC_AVALANCHE: ${EVM_RPC_AVALANCHE}
+      EVM_RPC_BSC: ${EVM_RPC_BSC}
+      PYTH_HERMES_URL: ${PYTH_HERMES_URL:-https://hermes.pyth.network}
+      REDIS_URL: redis://redis:6379
+      DB_PATH: /data/orbit.db
+      API_KEYS: ${API_KEYS}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-60}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      WEBHOOK_URL: ${WEBHOOK_URL:-}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
+    volumes:
+      - orbit_data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  orbit_data:
+  redis_data:
